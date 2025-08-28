@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import ButtonComponent from "./ButtonComponent";
 
 const AddJobForm = (props) => {
   const [company, setCompany] = useState("");

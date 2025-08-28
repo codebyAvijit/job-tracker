@@ -3,17 +3,38 @@ import AddJobForm from "./components/AddJobForm";
 
 const App = () => {
   const [jobs, setJobs] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editCompany, setEditCompany] = useState("");
+  const [editPosition, setEditPosition] = useState("");
+  const [editStatus, setEditStatus] = useState("");
+
+  // Create job
   const handleJobs = (job) => {
     setJobs([...jobs, job]);
     console.log("Jobs: ", [...jobs, job]);
   };
+
+  // Delete job
   const deleteJob = (index) => {
-    setJobs(
-      jobs.filter((_, jobId) => {
-        return jobId !== index;
-      })
-    );
+    setJobs(jobs.filter((_, jobId) => jobId !== index));
   };
+
+  // Save edited job
+  const handleEditSave = (updatedJob, index) => {
+    const newJobs = [...jobs];
+    newJobs[index] = updatedJob;
+    setJobs(newJobs);
+    setEditingIndex(null); // exit edit mode
+  };
+
+  // Start editing
+  const startEditing = (index) => {
+    setEditingIndex(index);
+    setEditCompany(jobs[index].company);
+    setEditPosition(jobs[index].position);
+    setEditStatus(jobs[index].status);
+  };
+
   return (
     <>
       <div className="text-3xl font-bold text-center mb-5">Job Tracker</div>
@@ -26,22 +47,67 @@ const App = () => {
         ) : (
           jobs.map((job, index) => (
             <div key={index} className="border-b p-2">
-              Company: {job.company} | Position: {job.position} | Status:{" "}
-              {job.status}
-              <br></br>
-              {jobs.length === 0 ? (
-                ""
-              ) : (
-                <div className="text-center mt-4">
-                  <button
-                    onClick={() => {
-                      deleteJob(index);
-                    }}
-                    className="text-white  bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+              {editingIndex === index ? (
+                <>
+                  <input
+                    type="text"
+                    value={editCompany}
+                    onChange={(e) => setEditCompany(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    value={editPosition}
+                    onChange={(e) => setEditPosition(e.target.value)}
+                  />
+                  <select
+                    value={editStatus}
+                    onChange={(e) => setEditStatus(e.target.value)}
                   >
-                    Delete Job
+                    <option value="applied">Applied</option>
+                    <option value="interviewing">Interviewing</option>
+                    <option value="offer">Offer</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                  <button
+                    onClick={() =>
+                      handleEditSave(
+                        {
+                          company: editCompany,
+                          position: editPosition,
+                          status: editStatus,
+                        },
+                        index
+                      )
+                    }
+                    className="text-white bg-gray-800 hover:bg-gray-900 px-5 py-2.5 rounded-lg"
+                  >
+                    Save
                   </button>
-                </div>
+                  <button
+                    onClick={() => setEditingIndex(null)}
+                    className="text-white bg-gray-800 hover:bg-gray-900 px-5 py-2.5 rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p>Company: {job.company}</p>
+                  <p>Position: {job.position}</p>
+                  <p>Status: {job.status}</p>
+                  <button
+                    onClick={() => startEditing(index)}
+                    className="text-white bg-gray-800 hover:bg-gray-900 px-5 py-2.5 rounded-lg"
+                  >
+                    Edit
+                  </button>{" "}
+                  <button
+                    onClick={() => deleteJob(index)}
+                    className="text-white bg-gray-800 hover:bg-gray-900 px-5 py-2.5 rounded-lg"
+                  >
+                    Delete
+                  </button>
+                </>
               )}
             </div>
           ))

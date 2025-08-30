@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import AddJobForm from "./components/AddJobForm";
 import StatsSection from "./components/StatsSection";
 
 const App = () => {
   // const [jobs, setJobs] = useState([]);
+  //adding state for search functionality
   const [jobs, setJobs] = useState(() => {
     const stored = localStorage.getItem("jobs");
     return stored ? JSON.parse(stored) : [];
   });
-
-  //adding state for search functionality
 
   const [searchTerm, setSearchTerm] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
   const [editCompany, setEditCompany] = useState("");
   const [editPosition, setEditPosition] = useState("");
   const [editStatus, setEditStatus] = useState("");
+
+  //adding state to implement sorting
+
+  const [sortOrder, setSortOrder] = useState("asc");
 
   //setting up localStorage to get data
 
@@ -68,6 +71,22 @@ const App = () => {
     );
   });
 
+  // sorting function
+  const sortingFunction = () => {
+    const sortedJobs = [...jobs].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.company.localeCompare(b.company);
+      } else {
+        return b.company.localeCompare(a.company);
+      }
+    });
+
+    setJobs(sortedJobs);
+
+    // toggle sort order for next click
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
   return (
     <>
       <div className="text-3xl font-bold text-center mb-5">Job Tracker</div>
@@ -80,6 +99,14 @@ const App = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border p-2 rounded mb-4 w-full"
       />
+
+      {/* sorting button */}
+      <button
+        onClick={sortingFunction}
+        className="text-white bg-gray-800 hover:bg-gray-900 px-5 py-2.5 rounded-lg"
+      >
+        Sort By Company Name ({sortOrder === "asc" ? "A → Z" : "Z → A"})
+      </button>
       <div className="mt-5">
         <h2 className="text-xl font-semibold">Job List</h2>
         {jobs.length === 0 ? (

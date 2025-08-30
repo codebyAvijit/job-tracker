@@ -1,13 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddJobForm from "./components/AddJobForm";
 import StatsSection from "./components/StatsSection";
 
 const App = () => {
-  const [jobs, setJobs] = useState([]);
+  // const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState(() => {
+    const stored = localStorage.getItem("jobs");
+    return stored ? JSON.parse(stored) : [];
+  });
+
   const [editingIndex, setEditingIndex] = useState(null);
   const [editCompany, setEditCompany] = useState("");
   const [editPosition, setEditPosition] = useState("");
   const [editStatus, setEditStatus] = useState("");
+
+  //setting up localStorage to get data
+
+  // useEffect(() => {
+  //   const getStoredItem = localStorage.getItem("jobs");
+  //   if (getStoredItem) {
+  //     setJobs(JSON.parse(getStoredItem));
+  //   }
+  // }, []);
+
+  //if item is not stored in local storage then setting it
+
+  useEffect(() => {
+    localStorage.setItem("jobs", JSON.stringify(jobs));
+  }, [jobs]);
 
   // Create job
   const handleJobs = (job) => {

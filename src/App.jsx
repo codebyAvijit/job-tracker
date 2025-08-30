@@ -38,7 +38,7 @@ const App = () => {
   // Create job
   const handleJobs = (job) => {
     setJobs([...jobs, job]);
-    console.log("Jobs: ", [...jobs, job]);
+    // console.log("Jobs: ", [...jobs, job]);
   };
 
   // Delete job
@@ -86,6 +86,8 @@ const App = () => {
     // toggle sort order for next click
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
+
+  //form validation
 
   return (
     <>

@@ -6,13 +6,45 @@ const AddJobForm = (props) => {
   const [company, setCompany] = useState("");
   const [position, setPosition] = useState("");
   const [status, setStatus] = useState("");
+
+  // setting error state
+
+  const [errors, setErrors] = useState({});
+
   const jobHandler = (e) => {
     e.preventDefault();
+    if (!formValidation()) return;
+
     const job = { company, position, status };
-    props.onAddJob(job); // call parent’s function
+    props.onAddJob(job);
+
     setCompany("");
     setPosition("");
-    setStatus(""); // reset form after submit
+    setStatus("");
+    setErrors({});
+  };
+
+  const formValidation = () => {
+    const newErrors = {};
+
+    if (!company.trim()) {
+      newErrors.company = "Please Enter Company name";
+    }
+
+    if (!position.trim()) {
+      newErrors.position = "Please Enter Position name";
+    }
+
+    if (
+      !["applied", "interviewing", "offer", "rejected"].includes(
+        status.toLowerCase()
+      )
+    ) {
+      newErrors.status = "Please Select a Valid Status";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // true if no errors
   };
 
   return (
@@ -31,11 +63,15 @@ const AddJobForm = (props) => {
               value={company}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Company"
-              required
               onChange={(e) => {
                 setCompany(e.target.value);
               }}
             />
+            {errors.company && (
+              <p className="text-red-500 text-sm text-center mt-1">
+                {errors.company}
+              </p>
+            )}
           </div>
           <div>
             <label
@@ -49,11 +85,15 @@ const AddJobForm = (props) => {
               value={position}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Position"
-              required
               onChange={(e) => {
                 setPosition(e.target.value);
               }}
             />
+            {errors.position && (
+              <p className="text-red-500 text-sm text-center mt-1">
+                {errors.position}
+              </p>
+            )}
           </div>
           <div>
             <label

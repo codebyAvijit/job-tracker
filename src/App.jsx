@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AddJobForm from "./components/AddJobForm";
+import StatsSection from "./components/StatsSection";
 
 const App = () => {
   const [jobs, setJobs] = useState([]);
@@ -114,7 +115,7 @@ const App = () => {
         )}
       </div>
 
-      <div className="mt-5">Stats</div>
+      <StatsSection jobs={jobs} />
     </>
   );
 };

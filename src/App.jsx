@@ -9,6 +9,9 @@ const App = () => {
     return stored ? JSON.parse(stored) : [];
   });
 
+  //adding state for search functionality
+
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
   const [editCompany, setEditCompany] = useState("");
   const [editPosition, setEditPosition] = useState("");
@@ -56,17 +59,33 @@ const App = () => {
     setEditStatus(jobs[index].status);
   };
 
+  //filtering jobs
+
+  const filteredJobs = jobs.filter((job) => {
+    return (
+      job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.position.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <>
       <div className="text-3xl font-bold text-center mb-5">Job Tracker</div>
       <AddJobForm onAddJob={handleJobs} />
-
+      {/* search input */}
+      <input
+        type="text"
+        placeholder="Enter Your Search"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="border p-2 rounded mb-4 w-full"
+      />
       <div className="mt-5">
         <h2 className="text-xl font-semibold">Job List</h2>
         {jobs.length === 0 ? (
           <p>No jobs yet. Add one above 👆</p>
         ) : (
-          jobs.map((job, index) => (
+          filteredJobs.map((job, index) => (
             <div key={index} className="border-b p-2">
               {editingIndex === index ? (
                 <>
